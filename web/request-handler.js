@@ -4,27 +4,30 @@ var fs = require('fs');
 var  httpHelpers = require('./http-helpers');
 // require more modules/folders here!
 
-exports.handleRequest = function (req, res) {
-  if(req.url === "/") {
+var requestMethods = {
+  "GET" : function(req, res){
+    var filePath = req.url === '/' ? path.join(archive.paths.siteAssets, "/index.html") : path.join(archive.paths.archivedSites, "www.google.com");
     res.writeHead(200, httpHelpers.headers);
-    fs.readFile(path.join(archive.paths.siteAssets, "/index.html"), function (err, data) {
+    fs.readFile(filePath, function (err, data) {
       if(err) {
         throw err;
       }
       res.end(data);
     });
-    // res.end();
+  },
 
-  }else if(req.url === "/www.google.com") {
-    res.writeHead(200, httpHelpers.headers);
-    fs.readFile(path.join(archive.paths.archivedSites, "www.google.com"), function (err, data) {
-      if(err) {
+  "POST": function(req, res){
+    fs.writeFile(archive.paths.list, req._postData.url+'\n', function(err, data){
+      if(err){
         throw err;
       }
-      res.end(data);
+      res.writeHead(302, httpHelpers.headers);
+      res.end();
     });
-    // res.end();
-
   }
-  // res.end(archive.paths.list);
 };
+
+exports.handleRequest = function (req, res) {
+  requestMethods[req.method](req, res);
+};
+
