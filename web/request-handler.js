@@ -5,10 +5,10 @@ var  httpHelpers = require('./http-helpers');
 // require more modules/folders here!
 
 var requestMethods = {
-  "GET" : function(req, res){
+  "GET": function(req, res){
     archive.readListOfUrls(function(list) {
-      if(list.indexOf(req.url.slice(1)) === -1) {
-      // if(archive.isUrlInList(req.url.slice(1), list)) {
+      // if(list.indexOf(req.url.slice(1)) === -1) {
+      if(!archive.isUrlInList(req.url.slice(1), list)) {
         res.writeHead(404, httpHelpers.headers);
         res.end();
       }else{
@@ -33,12 +33,11 @@ var requestMethods = {
 
     req.on("end", function(){
       data = data.slice(4);     //removes "url="
-      fs.appendFile(archive.paths.list, data + '\n', function(err, data){
-        if(err){
-          throw err;
-        }
-        res.writeHead(302, httpHelpers.headers);
 
+      //read list
+      //check list
+      archive.addUrlToList(data, function(){
+        res.writeHead(302, httpHelpers.headers);
         //redirect to loading page
         fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
           if(err) {
@@ -46,10 +45,12 @@ var requestMethods = {
           }
           res.end(data);
         });
+
+      //serve content -- GET
       });
     });
-  }
-};
+  } //end POST method
+}; // requestMethod object
 
 exports.handleRequest = function (req, res) {
   requestMethods[req.method](req, res);

@@ -36,13 +36,25 @@ exports.readListOfUrls = function(callback){
 };
 
 exports.isUrlInList = function(url, list){
-  return list.indexOf(url) !== -1;
+  if(_.indexOf(list, url) !== -1){
+    return true;
+  }
+  return false;
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(data, callback){
+  fs.appendFile(archive.paths.list, data + '\n', function(err, data){
+    if(err){
+      throw err;
+    }else{
+      callback();
+    }
+  });
 };
 
 exports.isURLArchived = function(){
+
+
 };
 
 exports.downloadUrls = function(){
