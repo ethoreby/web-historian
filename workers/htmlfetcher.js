@@ -7,8 +7,8 @@
 var path = require('path');
 var http = require('http');
 
-exports.scrape = function() {
-  http.get("http://www.google.com/index.html", function(res) {
+exports.scrape = function(data) {
+  http.get("http://" + data, function(res) {
     console.log("Got response: " + res.statusCode);
 
     var data = "";

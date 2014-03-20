@@ -23,8 +23,14 @@ var requestMethods = {
               res.end(data);
             });
           }else {
-            //handle not ready
-            res.end();
+            //redirect to loading page
+            res.writeHead(302, httpHelpers.headers);
+            fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
+              if(err) {
+                throw err;
+              }
+              res.end(data);
+            });
           }
         });
       }
@@ -40,8 +46,27 @@ var requestMethods = {
 
     req.on("end", function(){
       data = data.slice(4);     //removes "url="
-      workers.scrape();
+      // workers.scrape(data);
       //read list
+      archive.readListOfUrls(function(list) {
+        if(archive.isUrlInList(data, list)) {               //if in list
+          archive.isURLArchived(data, function(htmlReady) { //and in archive
+            if(htmlReady) {                                 //and scraped
+              var filePath = path.join(archive.paths.archivedSites, data);
+              res.writeHead(302, httpHelpers.headers);      //redirect and serve
+
+              fs.readFile(filePath, function (err, data) {
+                if(err) {
+                  throw err;
+                }
+                res.end(data);
+              });
+            }
+          });
+        }else{
+
+        }
+      });
       //check list
       archive.addUrlToList(data, function(){
         res.writeHead(302, httpHelpers.headers);
@@ -52,7 +77,6 @@ var requestMethods = {
           }
           res.end(data);
         });
-
       //serve content -- GET
       });
     });
