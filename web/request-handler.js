@@ -7,18 +7,24 @@ var  httpHelpers = require('./http-helpers');
 var requestMethods = {
   "GET": function(req, res){
     archive.readListOfUrls(function(list) {
-      // if(list.indexOf(req.url.slice(1)) === -1) {
       if(!archive.isUrlInList(req.url.slice(1), list)) {
         res.writeHead(404, httpHelpers.headers);
         res.end();
       }else{
         var filePath = req.url === '/' ? path.join(archive.paths.siteAssets, "/index.html") : path.join(archive.paths.archivedSites, "www.google.com");
         res.writeHead(200, httpHelpers.headers);
-        fs.readFile(filePath, function (err, data) {
-          if(err) {
-            throw err;
+        archive.isURLArchived(req.url.slice(1), function(htmlReady){
+          if(htmlReady){
+            fs.readFile(filePath, function (err, data) {
+              if(err) {
+                throw err;
+              }
+              res.end(data);
+            });
+          }else {
+            //handle not ready
+            res.end();
           }
-          res.end(data);
         });
       }
     });

@@ -52,9 +52,9 @@ exports.addUrlToList = function(data, callback){
   });
 };
 
-exports.isURLArchived = function(){
-
-
+exports.isURLArchived = function(url, callback){
+  var filePath = path.join(archive.paths.archivedSites, url);
+  fs.exists(filePath, callback);
 };
 
 exports.downloadUrls = function(){
