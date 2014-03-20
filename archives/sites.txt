@@ -1,1 +1,2 @@
-www.google.com
+example1.com
+example2.com

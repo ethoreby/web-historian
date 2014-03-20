@@ -7,7 +7,7 @@ var path = require('path');
 var res;
 
 archive.initialize({
-  list : path.join(__dirname, "/testdata/sites.txt")
+  // list : path.join(__dirname, "/testdata/sites.txt")
 });
 
 // Conditional async testing, akin to Jasmine's waitsFor()
@@ -36,6 +36,7 @@ describe("Node Server Request Listener Function", function() {
         done();
     });
   });
+
 
   it("Should answer GET requests for archived websites", function(done) {
     var fixtureName = "www.google.com";
