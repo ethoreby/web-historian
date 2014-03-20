@@ -38,7 +38,14 @@ var requestMethods = {
           throw err;
         }
         res.writeHead(302, httpHelpers.headers);
-        res.end();
+
+        //redirect to loading page
+        fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
+          if(err) {
+            throw err;
+          }
+          res.end(data);
+        });
       });
     });
   }

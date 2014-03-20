@@ -1,1 +1,4 @@
 www.google.com
+www.reddit.com
+www.cnn.com
+www.yahoo.com
