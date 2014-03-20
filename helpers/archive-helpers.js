@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var archive = require('../helpers/archive-helpers');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -25,17 +26,17 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(callback){
   fs.readFile(archive.paths.list, 'utf8',  function(err, data){
     if(err) {
       throw err;
-    }else{
-      return data.split('\n');
     }
+    callback(data.split('\n'));
   });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url, list){
+  return list.indexOf(url) !== -1;
 };
 
 exports.addUrlToList = function(){

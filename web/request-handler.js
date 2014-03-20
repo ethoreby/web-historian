@@ -6,11 +6,9 @@ var  httpHelpers = require('./http-helpers');
 
 var requestMethods = {
   "GET" : function(req, res){
-    fs.readFile(archive.paths.list, 'utf8',  function(err, data) {
-      console.log("THIS IS THE DATA", data);
-      console.log("THIS IS THE REAAD URL", req.url);
-      var targetUrl = (req.url).slice(1);
-      if(data.indexOf(targetUrl) === -1) {
+    archive.readListOfUrls(function(list) {
+      if(list.indexOf(req.url.slice(1)) === -1) {
+      // if(archive.isUrlInList(req.url.slice(1), list)) {
         res.writeHead(404, httpHelpers.headers);
         res.end();
       }else{
@@ -27,12 +25,21 @@ var requestMethods = {
   },
 
   "POST": function(req, res){
-    fs.appendFile(archive.paths.list, req._postData.url+'\n', function(err, data){
-      if(err){
-        throw err;
-      }
-      res.writeHead(302, httpHelpers.headers);
-      res.end();
+    var data = "";
+
+    req.on("data", function(chunk){
+      data += chunk;
+    });
+
+    req.on("end", function(){
+      data = data.slice(4);     //removes "url="
+      fs.appendFile(archive.paths.list, data + '\n', function(err, data){
+        if(err){
+          throw err;
+        }
+        res.writeHead(302, httpHelpers.headers);
+        res.end();
+      });
     });
   }
 };
