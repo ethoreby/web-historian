@@ -2,6 +2,7 @@ var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
 var  httpHelpers = require('./http-helpers');
+var workers = require('../workers/htmlfetcher');
 // require more modules/folders here!
 
 var requestMethods = {
@@ -39,7 +40,7 @@ var requestMethods = {
 
     req.on("end", function(){
       data = data.slice(4);     //removes "url="
-
+      workers.scrape();
       //read list
       //check list
       archive.addUrlToList(data, function(){
