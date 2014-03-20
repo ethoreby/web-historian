@@ -12,7 +12,7 @@ var requestMethods = {
         res.writeHead(404, httpHelpers.headers);
         res.end();
       }else{
-        var filePath = req.url === '/' ? path.join(archive.paths.siteAssets, "/index.html") : path.join(archive.paths.archivedSites, "www.google.com");
+        var filePath = req.url === '/' ? path.join(archive.paths.siteAssets, "/index.html") : path.join(archive.paths.archivedSites, req.url.slice(1));
         res.writeHead(200, httpHelpers.headers);
         archive.isURLArchived(req.url.slice(1), function(htmlReady){
           if(htmlReady){
@@ -24,13 +24,7 @@ var requestMethods = {
             });
           }else {
             //redirect to loading page
-            res.writeHead(302, httpHelpers.headers);
-            fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
-              if(err) {
-                throw err;
-              }
-              res.end(data);
-            });
+            httpHelpers.serveLoadingPage(res);
           }
         });
       }
@@ -61,24 +55,18 @@ var requestMethods = {
                 }
                 res.end(data);
               });
+            }else {                                         //serve loading page if not ready
+              httpHelpers.serveLoadingPage(res);
             }
           });
         }else{
-
+          archive.addUrlToList(data, function(){
+            //redirect to loading page
+            httpHelpers.serveLoadingPage(res);
+          });
         }
       });
       //check list
-      archive.addUrlToList(data, function(){
-        res.writeHead(302, httpHelpers.headers);
-        //redirect to loading page
-        fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
-          if(err) {
-            throw err;
-          }
-          res.end(data);
-        });
-      //serve content -- GET
-      });
     });
   } //end POST method
 }; // requestMethod object

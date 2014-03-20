@@ -6,6 +6,7 @@
 //
 var path = require('path');
 var http = require('http');
+var archive = require('../helpers/archive-helpers');
 
 exports.scrape = function(data) {
   http.get("http://" + data, function(res) {

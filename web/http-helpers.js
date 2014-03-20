@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
+var  httpHelpers = require('./http-helpers');
 
 exports.headers = headers = {
   "access-control-allow-origin": "*",
@@ -16,3 +17,13 @@ exports.serveAssets = function(res, asset) {
 };
 
 // As you progress, keep thinking about what helper functions you can put here!
+
+exports.serveLoadingPage = function(res) {
+  res.writeHead(302, httpHelpers.headers);
+  fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
+    if(err) {
+      throw err;
+    }
+    res.end(data);
+  });
+};
