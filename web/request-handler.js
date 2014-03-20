@@ -8,9 +8,9 @@ var requestMethods = {
   "GET" : function(req, res){
     fs.readFile(archive.paths.list, 'utf8',  function(err, data) {
       console.log("THIS IS THE DATA", data);
-      console.log("THIS IS THE REAAD URL",archive.paths.list);
+      console.log("THIS IS THE REAAD URL", req.url);
       var targetUrl = (req.url).slice(1);
-      if(data.indexOf('www.google.com') === -1) {
+      if(data.indexOf(targetUrl) === -1) {
         res.writeHead(404, httpHelpers.headers);
         res.end();
       }else{
@@ -24,7 +24,6 @@ var requestMethods = {
         });
       }
     });
-
   },
 
   "POST": function(req, res){
