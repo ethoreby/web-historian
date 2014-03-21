@@ -1,4 +1,4 @@
-var htmlFetcher = require('../workers/htmlFetcher');
+var htmlFetcher = require('../workers/htmlfetcher');
 var archive = require('../helpers/archive-helpers');
 
 archive.readListOfUrls(function(list) {
