@@ -7,9 +7,10 @@
 var path = require('path');
 var http = require('http');
 var archive = require('../helpers/archive-helpers');
+var fs = require('fs');
 
-exports.scrape = function(data) {
-  http.get("http://" + data, function(res) {
+exports.scrape = function(url) {
+  http.get("http://" + url, function(res) {
     console.log("Got response: " + res.statusCode);
 
     var data = "";
@@ -19,11 +20,7 @@ exports.scrape = function(data) {
     });
 
     res.on("end", function(){
-      console.log(data);
+      fs.writeFile(path.join(archive.paths.archivedSites, archive.url), data);
     });
-
-    // ).on('error', function(e) {
-    //   console.log("Got error: " + e.message);
-    // });
   });
 };

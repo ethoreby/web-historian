@@ -18,9 +18,19 @@ exports.serveAssets = function(res, asset) {
 
 // As you progress, keep thinking about what helper functions you can put here!
 
-exports.serveLoadingPage = function(res) {
-  res.writeHead(302, httpHelpers.headers);
-  fs.readFile(path.join(archive.paths.siteAssets, "/loading.html"), function (err, data) {
+exports.serveLocalResource = function(req, res, load) {
+  res.writeHead(200, httpHelpers.headers);
+  var url = req.url.slice(1);
+  var filePath;
+  if(load) {
+    filePath = path.join(archive.paths.siteAssets, "/loading.html");
+  }else if(url === "") {
+    filePath = path.join(archive.paths.siteAssets, "/index.html");
+  }else {
+    filePath = path.join(archive.paths.siteAssets, "/styles.css");
+  }
+
+  fs.readFile(filePath, function (err, data) {
     if(err) {
       throw err;
     }
