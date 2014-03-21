@@ -20,7 +20,8 @@ exports.scrape = function(url) {
     });
 
     res.on("end", function(){
-      fs.writeFile(path.join(archive.paths.archivedSites, archive.url), data);
+      var filePath = path.join(archive.paths.archivedSites, url);
+      fs.writeFile(filePath, data);
     });
   });
 };

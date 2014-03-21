@@ -68,6 +68,7 @@ var requestMethods = {
           archive.addUrlToList(data, function(){
             //redirect to loading page
             httpHelpers.serveLocalResource(req, res, true);
+            //workers.scrape(data);
           });
         }
       });
